@@ -1,7 +1,5 @@
-"""Celery tasks for User module"""
 from celery import shared_task
 
-from .enums import SetupStatus
 from .models import Setup
 
 
