@@ -45,12 +45,16 @@ class Setup(models.Model):
 
     @property
     def interval_schedule(self):
+        if self.time_interval == TimeInterval.one_sec:
+            return IntervalSchedule.objects.get_or_create(every=1, period='seconds')[0]
+        if self.time_interval == TimeInterval.ten_sec:
+            return IntervalSchedule.objects.get_or_create(every=10, period='seconds')[0]
         if self.time_interval == TimeInterval.one_min:
-            return IntervalSchedule.objects.get(every=1, period='minutes')
+            return IntervalSchedule.objects.get_or_create(every=1, period='minutes')[0]
         if self.time_interval == TimeInterval.five_mins:
-            return IntervalSchedule.objects.get(every=5, period='minutes')
+            return IntervalSchedule.objects.get_or_create(every=5, period='minutes')[0]
         if self.time_interval == TimeInterval.one_hour:
-            return IntervalSchedule.objects.get(every=1, period='hours')
+            return IntervalSchedule.objects.get_or_create(every=1, period='hours')[0]
 
         raise NotImplementedError(
             '''Interval Schedule for {interval} is not added.'''.format(
