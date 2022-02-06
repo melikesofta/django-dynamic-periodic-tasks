@@ -25,7 +25,9 @@ SECRET_KEY = 'vgkno5day^g+j$6*o6d9^(l)wsr@#5=nx0o^gnj%^#=6h4+zcs'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '*'
+]
 
 
 # Application definition
@@ -77,8 +79,12 @@ WSGI_APPLICATION = 'django_dynamic_periodic_tasks.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dynamic_db',
+        'USER': 'postgres',
+        'PASSWORD': 'Password1234!',
+        'HOST': 'db',
+        'PORT': 5432
     }
 }
 
@@ -122,7 +128,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Celery settings
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_BROKER_URL = 'redis://redis:6379'
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
 
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'

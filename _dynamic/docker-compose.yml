@@ -1,0 +1,60 @@
+version: '3.6'
+
+services:
+
+  web:
+    container_name: web
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ../.:/dynamic
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+      - redis
+      - celery
+      - celery-beat
+    command: ./manage.py runserver 0.0.0.0:8000
+
+  db:
+    container_name: db
+    image: postgres:10.14
+    environment:
+      POSTGRES_PASSWORD: Password1234!  # superuser password, username is postgres
+      POSTGRES_DB: dynamic_db  # default db created when image first started
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  redis:
+    container_name: redis
+    image: redis:6.0.1
+    volumes:
+      - ./data/redis:/data
+    ports:
+      - 6379:6379
+
+  celery:
+    container_name: celery
+    image: dynamic_web:latest
+    command: celery -A django_dynamic_periodic_tasks worker -l info --uid=nobody --gid=nogroup
+    volumes:
+    - ../.:/dynamic
+    depends_on:
+      - db
+      - redis
+    restart: always
+
+  celery-beat:
+    container_name: beat
+    image: dynamic_web:latest
+    command: celery -A django_dynamic_periodic_tasks beat -l info --pidfile= --uid=nobody --gid=nogroup
+    volumes:
+      - ../.:/dynamic
+    depends_on:
+      - db
+      - redis
+    restart: always

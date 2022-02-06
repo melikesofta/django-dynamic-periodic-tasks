@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+
+echo "waiting for database"
+wait-for-it.sh -t 120 db:5432
+
+echo "starting $@"
+exec "$@"

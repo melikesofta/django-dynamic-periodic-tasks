@@ -3,3 +3,4 @@ env
 .idea
 .vscode
 db.sqlite3
+/_dynamic/data/
